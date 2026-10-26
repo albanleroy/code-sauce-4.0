@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Sauce — connexion</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0f0f14; color: #e8e8f0;
+         font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 0 16px; }
+  h1 { color: #00e676; font-size: 26px; margin: 0 0 8px; }
+  p { color: #a0a0b0; font-size: 14px; margin: 0 0 28px; }
+  #bouton { display: flex; justify-content: center; min-height: 44px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Code Sauce</h1>
+  <p id="message">Connecte-toi avec Google. L'administrateur autorisera ensuite ton appareil.</p>
+  <div id="bouton"></div>
+</main>
+<script>
+  function message(texte) { document.getElementById("message").textContent = texte; }
+  function surConnexion(reponse) {
+    message("Connexion…");
+    fetch("/code-sauce-4.0/adresse.txt?" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.text() : ""; })
+      .then(function (adresse) {
+        adresse = adresse.trim();
+        if (!adresse) { message("Code Sauce est fermé pour le moment, reviens plus tard."); return; }
+        location.replace(adresse + "/#google=" + encodeURIComponent(reponse.credential));
+      }, function () { message("Impossible de joindre Code Sauce. Réessaie."); });
+  }
+  function demarrer() {
+    google.accounts.id.initialize({ client_id: "605004102980-ii9eeqijcis96g13uc4rrhilqiuunng1.apps.googleusercontent.com", callback: surConnexion, ux_mode: "popup" });
+    google.accounts.id.renderButton(document.getElementById("bouton"),
+      { theme: "filled_black", size: "large", shape: "pill", text: "signin_with", locale: "fr" });
+  }
+</script>
+<script src="https://accounts.google.com/gsi/client" async onload="demarrer()"></script>
+</body>
+</html>
