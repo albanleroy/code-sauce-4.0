@@ -68,13 +68,7 @@
     } else if (!alea || retour.get("state") !== alea || nonceDuJeton(jeton) !== alea) {
       echec("Cette connexion n'a pas été demandée depuis cette page. Recommence.");
     } else {
-      fetch("/code-sauce-4.0/adresse.txt?" + Date.now(), { cache: "no-store" })
-        .then(function (r) { return r.ok ? r.text() : ""; })
-        .then(function (adresse) {
-          adresse = adresse.trim();
-          if (!adresse) { echec("Code Sauce est fermé pour le moment, reviens plus tard."); return; }
-          location.replace(adresse + "/#google=" + encodeURIComponent(jeton));
-        }, function () { echec("Impossible de joindre Code Sauce. Réessaie."); });
+      location.replace("https://codesauce.fr/#google=" + encodeURIComponent(jeton));
     }
   }
 </script>
